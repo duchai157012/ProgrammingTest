@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ProgrammingTest.Application.Commands.Auth;
-using ProgrammingTest.Domain.Interfaces;
 using ProgrammingTest.Application.Interfaces;
 
 namespace ProgrammingTest.Application.Commands.Auth

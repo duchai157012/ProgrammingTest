@@ -2,7 +2,6 @@
 using MediatR;
 using ProgrammingTest.Application.Interfaces;
 using ProgrammingTest.Domain.Entities;
-using ProgrammingTest.Domain.Interfaces;
 using Shared.Contracts;
 using System;
 using System.Collections.Generic;

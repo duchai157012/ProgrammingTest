@@ -13,7 +13,6 @@ using ProgrammingTest.API.Middleware;
 using ProgrammingTest.Application;
 using ProgrammingTest.Application.Commands.Auth;
 using ProgrammingTest.Application.Interfaces;
-using ProgrammingTest.Domain.Interfaces;
 using ProgrammingTest.Infrastructure.Auth;
 using ProgrammingTest.Infrastructure.Clients;
 using ProgrammingTest.Infrastructure.Identity;
@@ -52,10 +51,8 @@ builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequir
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserServiceClient, UserServiceClient>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<INotificationClient, NotificationServiceClient>();
-builder.Services.AddTransient<OutboundDiagnosticsHandler>();
 
 
 builder.Services.AddAuthentication("Bearer")

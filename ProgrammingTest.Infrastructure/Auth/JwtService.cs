@@ -2,7 +2,6 @@
 using Microsoft.IdentityModel.Tokens;
 using ProgrammingTest.Application.Interfaces;
 using ProgrammingTest.Domain.Entities;
-using ProgrammingTest.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;

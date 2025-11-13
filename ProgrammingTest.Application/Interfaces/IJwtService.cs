@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProgrammingTest.Domain.Interfaces
+namespace ProgrammingTest.Application.Interfaces
 {
     public interface IJwtService
     {

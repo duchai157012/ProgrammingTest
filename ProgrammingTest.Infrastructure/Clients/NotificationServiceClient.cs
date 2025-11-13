@@ -8,9 +8,9 @@ namespace ProgrammingTest.Infrastructure.Clients
     {
         private readonly HttpClient _httpClient;
 
-        public NotificationServiceClient(HttpClient httpClient)
+        public NotificationServiceClient(IHttpClientFactory factory)
         {
-            _httpClient = httpClient;
+            _httpClient = factory.CreateClient("UserNotificationService");
         }
 
         public async Task<string> SendRandomNotificationAsync()

@@ -1,5 +1,6 @@
 using MassTransit;
 using Shared.Contracts;
+using System.Threading.RateLimiting;
 using UserNotificationService.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);

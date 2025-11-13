@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Polly;
+using Polly.Extensions.Http;
+using ProgrammingTest.API.Configuration;
+using ProgrammingTest.API.Extensions;
 using ProgrammingTest.API.Middleware;
 using ProgrammingTest.Application;
 using ProgrammingTest.Application.Commands.Auth;
@@ -17,10 +21,8 @@ using ProgrammingTest.Infrastructure.Persistence;
 using Shared.CurrentUserService;
 using Shared.Interfaces;
 using System.Text;
-using Polly;
-using Polly.Extensions.Http;
-using ProgrammingTest.API.Configuration;
-using ProgrammingTest.API.Extensions;
+using System.Threading.RateLimiting;
+using static ProgrammingTest.API.Configuration.HttpClientConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +54,9 @@ builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserServiceClient, UserServiceClient>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<INotificationClient, NotificationServiceClient>();
+builder.Services.AddTransient<OutboundDiagnosticsHandler>();
+
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
@@ -116,6 +121,21 @@ builder.Services.AddMassTransit(x =>
 
 // Register HttpClients and resilience policies in a separate configuration class
 builder.Services.AddHttpClients(builder.Configuration);
+
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 10,
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+});
 
 var app = builder.Build();
 

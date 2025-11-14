@@ -1,4 +1,5 @@
 using MassTransit;
+using System;
 using Shared.Contracts;
 using System.Threading.RateLimiting;
 using UserNotificationService.Consumers;
@@ -15,6 +16,9 @@ builder.Services.AddMassTransit(x =>
     {
         var connection = builder.Configuration.GetConnectionString("rabbit");
         cfg.Host(connection);
+        // Add message retry with exponential backoff: 3 retries
+        cfg.UseMessageRetry(r => r.Exponential(3, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(2)));
+
         cfg.ConfigureEndpoints(context);
     });
 });
